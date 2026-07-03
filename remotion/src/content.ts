@@ -112,6 +112,13 @@ export const toc = {
   ],
 };
 
+export const chapterDivider = {
+  part: "Teil 2",
+  heading: "Was hilft",
+  subheading: "Umfeld, Protein und clevere Alternativen — statt Willenskraft und Verbote.",
+  folioRight: "36",
+};
+
 export const recipe = {
   kicker: "Kapitel 10 · Sattmacher-Rezepte — Held-Rezept",
   heading: "Proteingrießpudding",
@@ -131,6 +138,9 @@ export const recipe = {
     "Mit Beeren und Zimt toppen — fertig.",
   ],
   nutrition: { kcal: 210, protein: 35, carbs: 14, fat: 2 },
+  tags: ["Süßhunger-Alternative", "5-Minuten-Rezept"],
+  prepTime: "5 Min.",
+  cookTime: "3 Min. Quellzeit",
   productImage: "more-nutrition/griesspudding.png",
   productLabel: "Produktbeispiel: More Protein Grießpudding",
   alternativesLabel: "Weitere Sattmacher für unterwegs",

@@ -7,12 +7,31 @@ def b64(name):
     data = (OUT / f"{name}.png").read_bytes()
     return base64.b64encode(data).decode("ascii")
 
-PAGE_IDS = ["cover", "toc", "foreword", "von-chris", "kapitel1", "recipe"]
+STANDARD_PAGES = [
+    ("cover", "Cover"),
+    ("toc", "Inhaltsverzeichnis"),
+    ("foreword", "Vorwort"),
+    ("von-chris", "Auftakt, Seite 1"),
+    ("kapitel1", "Kapitel 1, Seite 1"),
+    ("recipe", "Rezept: Proteingrießpudding"),
+]
+
+D_PAGES = [
+    ("cover", "Cover"),
+    ("toc", "Inhaltsverzeichnis"),
+    ("foreword", "Vorwort"),
+    ("chapter-divider", "Kapitel-Trenner"),
+    ("von-chris", "Auftakt, Seite 1"),
+    ("kapitel1", "Kapitel 1, Seite 1"),
+    ("recipe", "Rezept: Proteingrießpudding"),
+]
+
+ALL_DIRS = {"a": STANDARD_PAGES, "b": STANDARD_PAGES, "c": STANDARD_PAGES, "d": D_PAGES}
 
 images = {
-    name: b64(name)
-    for prefix in ["a", "b", "c"]
-    for name in [f"{prefix}-{p}" for p in PAGE_IDS]
+    f"{prefix}-{page_id}": b64(f"{prefix}-{page_id}")
+    for prefix, pages in ALL_DIRS.items()
+    for page_id, _ in pages
 }
 
 HEAD = """<title>Heißhunger — Remotion Design-Vergleich</title>
@@ -42,13 +61,20 @@ HEAD = """<title>Heißhunger — Remotion Design-Vergleich</title>
   .stage-header p{max-width:66ch;color:var(--stage-muted);line-height:1.6;margin:0;font-size:.98rem;}
 
   .direction{margin-bottom:80px;}
+  .direction.featured{
+    border:1px solid var(--stage-accent); border-radius:12px; padding:28px 28px 8px; margin-bottom:96px;
+  }
   .direction-head{ display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
     border-top:1px solid var(--stage-line);padding-top:20px;margin-bottom:24px; }
+  .direction.featured .direction-head{ border-top:none; padding-top:0; }
   .direction-head .tag{ font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
     font-size:.78rem;color:var(--stage-panel);background:var(--stage-ink);
     padding:3px 9px;border-radius:3px;font-weight:600;letter-spacing:.02em; }
+  .direction.featured .tag{ background:var(--stage-accent); }
   .direction-head h2{font-size:1.15rem;margin:0;font-weight:700;}
   .direction-head .desc{color:var(--stage-muted);font-size:.9rem;margin-left:auto;max-width:48ch;line-height:1.5;}
+  .badge{ font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+    color:var(--stage-accent);border:1px solid var(--stage-accent);border-radius:99px;padding:2px 10px; }
 
   .pages-row{ display:flex;gap:28px;overflow-x:auto;padding:8px 4px 20px; scroll-snap-type:x proximity; }
   .page-slot{scroll-snap-align:start;flex:0 0 auto;display:flex;flex-direction:column;gap:10px;}
@@ -77,15 +103,20 @@ def page_slot(img_key, caption):
         <p class="page-caption">{caption}</p>
       </div>"""
 
-def direction_section(letter, name, desc, prefix):
+def direction_section(letter, name, desc, prefix, featured=False):
+    pages = ALL_DIRS[prefix]
+    slots = "".join(page_slot(f"{prefix}-{page_id}", caption) for page_id, caption in pages)
+    cls = "direction featured" if featured else "direction"
+    badge = '<span class="badge">Haupt-Richtung</span>' if featured else ""
     return f"""
-  <section class="direction" data-dir="{letter.lower()}">
+  <section class="{cls}" data-dir="{letter.lower()}">
     <div class="direction-head">
       <span class="tag">{letter}</span>
       <h2>{name}</h2>
+      {badge}
       <span class="desc">{desc}</span>
     </div>
-    <div class="pages-row">{page_slot(f"{prefix}-cover", "Cover")}{page_slot(f"{prefix}-toc", "Inhaltsverzeichnis")}{page_slot(f"{prefix}-foreword", "Vorwort")}{page_slot(f"{prefix}-von-chris", "Auftakt, Seite 1")}{page_slot(f"{prefix}-kapitel1", "Kapitel 1, Seite 1")}{page_slot(f"{prefix}-recipe", "Rezept: Proteingrießpudding")}
+    <div class="pages-row">{slots}
     </div>
   </section>
 """
@@ -94,11 +125,17 @@ body = f"""
 <div class="stage">
   <div class="stage-header">
     <p class="eyebrow">Heißhunger — E-Book · Design-Vergleich (Remotion-Render)</p>
-    <h1>Drei Richtungen, echte Schriften, echtes Rendering</h1>
-    <p>Gerendert mit Remotion (React → Chromium) als PNG-Stills, mit den echten Google Fonts, die auch im finalen Buch verwendet würden: Source&nbsp;Serif&nbsp;4 / Public&nbsp;Sans (A), Anton / Barlow / IBM&nbsp;Plex&nbsp;Mono (B), Baloo&nbsp;2 / Lora / Caveat (C). Jede Richtung zeigt jetzt sechs Seiten: Cover, Inhaltsverzeichnis, Vorwort (roter Faden), Auftakt „Von Chris“, Kapitel-1-Einstieg und das Held-Rezept Proteingrießpudding — dort mit echten Produktfotos von <a href="https://morenutrition.de" style="color:inherit">morenutrition.de</a> statt Platzhaltern.</p>
+    <h1>Vier Richtungen, echte Schriften, echtes Rendering</h1>
+    <p>Gerendert mit Remotion (React → Chromium) als PNG-Stills, mit echten Google Fonts. <strong>D</strong> ist die aktuelle Haupt-Richtung: neutrales Weiß, an die More-Nutrition-Markenfarben angelehnt (Amber #FFB800, Ink #141618), inkl. vollflächiger Kapitel-Trenner-Seite und Rezeptformat mit echter Nährwert-Tabelle, Tag-Badges und Prep/Cook-Leiste — angelehnt an das Referenzformat von Greg Doucettes Anabolic Cookbook. A/B/C bleiben als Bonus-Design-Ansätze.</p>
   </div>
 """
 
+body += direction_section(
+    "D", "More-Branded Clean",
+    "Archivo (schwer) als Headline, Manrope als Fließschrift, reinweißer Hintergrund, Amber &amp; Near-Black nach More Nutrition.",
+    "d",
+    featured=True,
+)
 body += direction_section(
     "A", "Ruhig &amp; Editorial",
     "Source Serif 4 als Headline, Public Sans als Fließschrift, gedecktes Petrolgrün, viel Weißraum.",
@@ -117,7 +154,7 @@ body += direction_section(
 
 body += """
   <div class="stage-footer">
-    <p><strong>Hinweis:</strong> Gerendert mit Remotion (<code>npx remotion still</code>) aus React-Komponenten in <code>remotion/src/directions/</code>. Die gleiche Pipeline wird für das finale Buch genutzt — sobald eine Richtung feststeht, bauen wir daraus alle Kapitel-Seiten und rendern sie in einem Rutsch zu PDF-fähigen Stills.</p>
+    <p><strong>Hinweis:</strong> Gerendert mit Remotion (<code>npx remotion still</code>) aus React-Komponenten in <code>remotion/src/directions/</code>. Sobald der Text für alle 11 Kapitel + Anhang steht, rendern wir das komplette 30–40-Seiten-Buch in Richtung D.</p>
   </div>
 </div>
 """

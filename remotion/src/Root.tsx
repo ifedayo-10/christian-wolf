@@ -4,6 +4,7 @@ import { PAGE_WIDTH, PAGE_HEIGHT } from "./pageSize";
 import { ACover, AForeword, ATOC, AVonChris, AKapitel1, ARecipe } from "./directions/a";
 import { BCover, BForeword, BTOC, BVonChris, BKapitel1, BRecipe } from "./directions/b";
 import { CCover, CForeword, CTOC, CVonChris, CKapitel1, CRecipe } from "./directions/c";
+import { DCover, DTOC, DForeword, DChapterDivider, DVonChris, DKapitel1, DRecipe } from "./directions/d";
 
 const stills: { id: string; component: React.FC }[] = [
   { id: "a-cover", component: ACover },
@@ -24,6 +25,13 @@ const stills: { id: string; component: React.FC }[] = [
   { id: "c-von-chris", component: CVonChris },
   { id: "c-kapitel1", component: CKapitel1 },
   { id: "c-recipe", component: CRecipe },
+  { id: "d-cover", component: DCover },
+  { id: "d-toc", component: DTOC },
+  { id: "d-foreword", component: DForeword },
+  { id: "d-chapter-divider", component: DChapterDivider },
+  { id: "d-von-chris", component: DVonChris },
+  { id: "d-kapitel1", component: DKapitel1 },
+  { id: "d-recipe", component: DRecipe },
 ];
 
 export const RemotionRoot: React.FC = () => (
