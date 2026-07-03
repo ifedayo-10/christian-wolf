@@ -3,7 +3,43 @@ import { AbsoluteFill, Img, staticFile } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/Archivo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Manrope";
 import { PAGE_WIDTH, PAGE_HEIGHT } from "../pageSize";
-import { book, vonChris, kapitel1, kapitel2, kapitel3, kapitel5, kapitel6, toc, recipe, foreword, chapterDivider } from "../content";
+import {
+  book,
+  vonChris,
+  vonChris2,
+  kapitel1,
+  kapitel2,
+  kapitel3,
+  kapitel3b,
+  kapitel4,
+  kapitel5,
+  kapitel6,
+  kapitel6b,
+  kapitel7,
+  kapitel8,
+  kapitel9a,
+  kapitel9b,
+  kapitel11a,
+  kapitel11b,
+  toc,
+  recipe,
+  recipe2,
+  recipe3,
+  foreword,
+  part1Divider,
+  chapterDivider,
+  part3Divider,
+  part4Divider,
+  faq,
+  anhangIntro,
+  triggerFoodCheck,
+  notfallkarte,
+  einkaufslisteDruck,
+  pantry,
+  ueberChris,
+  schlusswort,
+  backmatter,
+} from "../content";
 
 const { fontFamily: displayFont } = loadDisplay("normal", { weights: ["700", "800", "900"] });
 const { fontFamily: bodyFont } = loadBody("normal", { weights: ["400", "600", "700", "800"] });
@@ -244,7 +280,9 @@ export const DForeword: React.FC = () => (
   </Page>
 );
 
-export const DChapterDivider: React.FC = () => (
+const Divider: React.FC<{ data: { part: string; heading: string; subheading: string; folioRight: string } }> = ({
+  data,
+}) => (
   <Page bg={tokens.dark}>
     <div style={{ height: "100%", display: "flex", flexDirection: "column", padding: "70px 70px 52px", color: "#fff" }}>
       <p
@@ -258,7 +296,7 @@ export const DChapterDivider: React.FC = () => (
           margin: 0,
         }}
       >
-        {chapterDivider.part}
+        {data.part}
       </p>
       <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
         <h1
@@ -271,16 +309,21 @@ export const DChapterDivider: React.FC = () => (
             maxWidth: "10ch",
           }}
         >
-          {chapterDivider.heading}
+          {data.heading}
         </h1>
       </div>
       <p style={{ fontFamily: bodyFont, fontSize: 22, opacity: 0.75, maxWidth: "38ch", margin: "0 0 30px", lineHeight: 1.5 }}>
-        {chapterDivider.subheading}
+        {data.subheading}
       </p>
-      <Folio left={chapterDivider.part} right={chapterDivider.folioRight} light />
+      <Folio left={data.part} right={data.folioRight} light />
     </div>
   </Page>
 );
+
+export const DChapterDivider: React.FC = () => <Divider data={chapterDivider} />;
+export const DPart1Divider: React.FC = () => <Divider data={part1Divider} />;
+export const DPart3Divider: React.FC = () => <Divider data={part3Divider} />;
+export const DPart4Divider: React.FC = () => <Divider data={part4Divider} />;
 
 export const DVonChris: React.FC = () => (
   <Page>
@@ -321,6 +364,30 @@ export const DVonChris: React.FC = () => (
         </div>
       </div>
       <Folio left={vonChris.folio.left} right={vonChris.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DVonChris2: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{vonChris2.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 38, lineHeight: 1.15, margin: "0 0 28px", maxWidth: "20ch" }}>
+        {vonChris2.heading}
+      </h3>
+      <div style={{ fontFamily: bodyFont, fontSize: 23, lineHeight: 1.85, maxWidth: "68ch" }}>
+        {vonChris2.paragraphs.map((p, i) => (
+          <p key={i} style={{ margin: "0 0 18px" }}>
+            {p}
+          </p>
+        ))}
+        <div style={{ borderLeft: `4px solid ${tokens.accent}`, paddingLeft: 22 }}>
+          <p style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 24, lineHeight: 1.4, margin: 0 }}>
+            {vonChris2.pullquote}
+          </p>
+        </div>
+      </div>
+      <Folio left={vonChris2.folio.left} right={vonChris2.folio.right} />
     </div>
   </Page>
 );
@@ -712,7 +779,523 @@ export const DRecipe: React.FC = () => (
         </div>
       </div>
 
-      <Folio left="Kapitel 10" right="79" />
+      <Folio left="Kapitel 10" right="22" />
+    </div>
+  </Page>
+);
+
+/* ===================== Additional chapters for the full 35-page book ===================== */
+
+const SimpleChecklist: React.FC<{ label: string; items: string[] }> = ({ label, items }) => (
+  <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "22px 24px" }}>
+    <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 16px" }}>
+      {label}
+    </p>
+    {items.map((item) => (
+      <div key={item} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 12 }}>
+        <span style={{ width: 18, height: 18, background: tokens.accent, flexShrink: 0, marginTop: 2, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 900, color: tokens.dark }}>
+          ✓
+        </span>
+        <p style={{ fontFamily: bodyFont, fontSize: 15, lineHeight: 1.5, margin: 0 }}>{item}</p>
+      </div>
+    ))}
+  </div>
+);
+
+export const DKapitel3b: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel3b.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 40, margin: "0 0 26px" }}>{kapitel3b.heading}</h3>
+      <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 40, alignItems: "start" }}>
+        <div style={{ fontFamily: bodyFont, fontSize: 22, lineHeight: 1.8 }}>
+          {kapitel3b.paragraphs.map((p, i) => (
+            <p key={i} style={{ margin: "0 0 18px" }}>
+              {p}
+            </p>
+          ))}
+        </div>
+        <SimpleChecklist label={kapitel3b.calloutLabel} items={kapitel3b.checklist} />
+      </div>
+      <Folio left={kapitel3b.folio.left} right={kapitel3b.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DKapitel4: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel4.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 28px" }}>{kapitel4.heading}</h3>
+      <div style={{ fontFamily: bodyFont, fontSize: 23, lineHeight: 1.85, maxWidth: "68ch" }}>
+        {kapitel4.paragraphs.map((p, i) => (
+          <p key={i} style={{ margin: "0 0 18px" }}>
+            {p}
+          </p>
+        ))}
+        <div style={{ borderLeft: `4px solid ${tokens.accent}`, paddingLeft: 22 }}>
+          <p style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 24, lineHeight: 1.4, margin: 0 }}>
+            {kapitel4.pullquote}
+          </p>
+        </div>
+      </div>
+      <Folio left={kapitel4.folio.left} right={kapitel4.folio.right} />
+    </div>
+  </Page>
+);
+
+const MakeTag: React.FC<{ make: string }> = ({ make }) => (
+  <span
+    style={{
+      display: "inline-block",
+      padding: "3px 10px",
+      fontFamily: bodyFont,
+      fontWeight: 800,
+      fontSize: 12,
+      letterSpacing: "0.04em",
+      textTransform: "uppercase",
+      background: make === "schwer" ? tokens.dark : tokens.accent,
+      color: make === "schwer" ? tokens.accent : tokens.dark,
+    }}
+  >
+    {make}
+  </span>
+);
+
+export const DKapitel6b: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel6b.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 38, margin: "0 0 18px" }}>{kapitel6b.heading}</h3>
+      <p style={{ fontFamily: bodyFont, fontSize: 19, opacity: 0.7, lineHeight: 1.6, maxWidth: "66ch", margin: "0 0 30px" }}>
+        {kapitel6b.intro}
+      </p>
+      <div style={{ border: `1px solid ${tokens.line}` }}>
+        {kapitel6b.rows.map((r, i) => (
+          <div
+            key={r.food}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.3fr 0.7fr 2fr",
+              gap: 16,
+              alignItems: "center",
+              padding: "16px 18px",
+              borderTop: i === 0 ? "none" : `1px solid ${tokens.line}`,
+            }}
+          >
+            <span style={{ fontFamily: bodyFont, fontWeight: 700, fontSize: 17 }}>{r.food}</span>
+            <MakeTag make={r.make} />
+            <span style={{ fontFamily: bodyFont, fontSize: 15, opacity: 0.7, lineHeight: 1.4 }}>{r.note}</span>
+          </div>
+        ))}
+      </div>
+      <Folio left={kapitel6b.folio.left} right={kapitel6b.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DKapitel7: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel7.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 28px" }}>{kapitel7.heading}</h3>
+      <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 40, alignItems: "start" }}>
+        <div style={{ fontFamily: bodyFont, fontSize: 21, lineHeight: 1.75 }}>
+          {kapitel7.paragraphs.map((p, i) => (
+            <p key={i} style={{ margin: "0 0 16px" }}>
+              {p}
+            </p>
+          ))}
+        </div>
+        <SimpleChecklist label={kapitel7.calloutLabel} items={kapitel7.checklist} />
+      </div>
+      <Folio left={kapitel7.folio.left} right={kapitel7.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DKapitel8: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel8.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 28px" }}>{kapitel8.heading}</h3>
+      <div style={{ fontFamily: bodyFont, fontSize: 23, lineHeight: 1.85, maxWidth: "68ch" }}>
+        {kapitel8.paragraphs.map((p, i) => (
+          <p key={i} style={{ margin: "0 0 18px" }}>
+            {p}
+          </p>
+        ))}
+        <div style={{ borderLeft: `4px solid ${tokens.accent}`, paddingLeft: 22 }}>
+          <p style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 24, lineHeight: 1.4, margin: 0 }}>
+            {kapitel8.pullquote}
+          </p>
+        </div>
+      </div>
+      <Folio left={kapitel8.folio.left} right={kapitel8.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DKapitel9a: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel9a.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 24px" }}>{kapitel9a.heading}</h3>
+      <div style={{ fontFamily: bodyFont, fontSize: 22, lineHeight: 1.8, maxWidth: "66ch", marginBottom: 26 }}>
+        {kapitel9a.paragraphs.map((p, i) => (
+          <p key={i} style={{ margin: 0 }}>
+            {p}
+          </p>
+        ))}
+      </div>
+      <div style={{ maxWidth: "50ch" }}>
+        <SimpleChecklist label={kapitel9a.calloutLabel} items={kapitel9a.checklist} />
+      </div>
+      <Folio left={kapitel9a.folio.left} right={kapitel9a.folio.right} />
+    </div>
+  </Page>
+);
+
+const CategoryColumns: React.FC<{ categories: { label: string; items: string[] }[] }> = ({ categories }) => (
+  <div style={{ display: "flex", gap: 24 }}>
+    {categories.map((cat) => (
+      <div key={cat.label} style={{ flex: 1, background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "20px 18px" }}>
+        <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 14, letterSpacing: "0.04em", textTransform: "uppercase", margin: "0 0 14px", opacity: 0.75 }}>
+          {cat.label}
+        </p>
+        {cat.items.map((item) => (
+          <p key={item} style={{ fontFamily: bodyFont, fontSize: 15, lineHeight: 1.6, margin: "0 0 8px" }}>
+            {item}
+          </p>
+        ))}
+      </div>
+    ))}
+  </div>
+);
+
+export const DKapitel9b: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel9b.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 20px" }}>{kapitel9b.heading}</h3>
+      <div style={{ fontFamily: bodyFont, fontSize: 20, lineHeight: 1.7, maxWidth: "66ch", marginBottom: 28, opacity: 0.85 }}>
+        {kapitel9b.paragraphs.map((p, i) => (
+          <p key={i} style={{ margin: 0 }}>
+            {p}
+          </p>
+        ))}
+      </div>
+      <CategoryColumns categories={kapitel9b.categories} />
+      <Folio left={kapitel9b.folio.left} right={kapitel9b.folio.right} />
+    </div>
+  </Page>
+);
+
+const SimpleRecipe: React.FC<{ data: typeof recipe2 }> = ({ data }) => (
+  <Page>
+    <div style={{ padding: "60px 70px 46px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
+        {data.tags.map((tag) => (
+          <span key={tag} style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, borderRadius: 4, padding: "6px 12px", fontFamily: bodyFont, fontWeight: 700, fontSize: 13 }}>
+            {tag}
+          </span>
+        ))}
+      </div>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 900, fontSize: 42, margin: "0 0 14px" }}>{data.heading}</h3>
+      <div style={{ display: "flex", gap: 24, background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "10px 16px", width: "fit-content", marginBottom: 20 }}>
+        <span style={{ fontFamily: bodyFont, fontSize: 14, fontWeight: 700 }}>{data.servings}</span>
+        <span style={{ fontFamily: bodyFont, fontSize: 14, opacity: 0.5 }}>|</span>
+        <span style={{ fontFamily: bodyFont, fontSize: 14, fontWeight: 700 }}>Zubereitung: {data.prepTime}</span>
+      </div>
+      <p style={{ fontFamily: bodyFont, fontSize: 18, lineHeight: 1.6, opacity: 0.75, maxWidth: "62ch", margin: "0 0 28px" }}>
+        {data.subheading}
+      </p>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.3fr", gap: 36, alignItems: "start" }}>
+        <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: 30, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ textAlign: "center" }}>
+            {([
+              ["Kcal", data.nutrition.kcal],
+              ["Protein", `${data.nutrition.protein}g`],
+              ["Kh", `${data.nutrition.carbs}g`],
+              ["Fett", `${data.nutrition.fat}g`],
+            ] as const).map(([label, val]) => (
+              <div key={label} style={{ display: "flex", justifyContent: "space-between", gap: 30, padding: "6px 0", borderBottom: `1px solid ${tokens.line}` }}>
+                <span style={{ fontFamily: bodyFont, fontSize: 14, opacity: 0.6 }}>{label}</span>
+                <span style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 14 }}>{val}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 12px" }}>
+            Zutaten
+          </p>
+          <ul style={{ margin: "0 0 22px", padding: 0, listStyle: "none" }}>
+            {data.ingredients.map((ing) => (
+              <li key={ing} style={{ fontFamily: bodyFont, fontSize: 17, lineHeight: 1.6, marginBottom: 8, paddingLeft: 20, position: "relative" }}>
+                <span style={{ position: "absolute", left: 0, color: tokens.accent, fontWeight: 900 }}>—</span>
+                {ing}
+              </li>
+            ))}
+          </ul>
+          <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 12px" }}>
+            Zubereitung
+          </p>
+          <ol style={{ margin: 0, padding: 0, listStyle: "none" }}>
+            {data.steps.map((step, i) => (
+              <li key={step} style={{ fontFamily: bodyFont, fontSize: 17, lineHeight: 1.6, marginBottom: 10, paddingLeft: 34, position: "relative" }}>
+                <span style={{ position: "absolute", left: 0, top: 0, width: 22, height: 22, background: tokens.dark, color: tokens.accent, fontFamily: bodyFont, fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {i + 1}
+                </span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+      <Folio left={data.kicker.split("·")[0].trim()} right={data.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DRecipe2: React.FC = () => <SimpleRecipe data={recipe2} />;
+export const DRecipe3: React.FC = () => <SimpleRecipe data={recipe3} />;
+
+export const DKapitel11a: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel11a.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 20px" }}>{kapitel11a.heading}</h3>
+      <div style={{ fontFamily: bodyFont, fontSize: 20, lineHeight: 1.7, maxWidth: "66ch", marginBottom: 28, opacity: 0.85 }}>
+        {kapitel11a.paragraphs.map((p, i) => (
+          <p key={i} style={{ margin: 0 }}>
+            {p}
+          </p>
+        ))}
+      </div>
+      <div style={{ border: `1px solid ${tokens.line}` }}>
+        {kapitel11a.rows.map((r, i) => (
+          <div key={r.day} style={{ display: "grid", gridTemplateColumns: "0.5fr 2fr", gap: 16, padding: "16px 18px", borderTop: i === 0 ? "none" : `1px solid ${tokens.line}` }}>
+            <span style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 18 }}>{r.day}</span>
+            <span style={{ fontFamily: bodyFont, fontSize: 16, lineHeight: 1.5 }}>{r.plan}</span>
+          </div>
+        ))}
+      </div>
+      <Folio left={kapitel11a.folio.left} right={kapitel11a.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DKapitel11b: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel11b.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 30px" }}>{kapitel11b.heading}</h3>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 30 }}>
+        {[kapitel11b.morning, kapitel11b.evening].map((block) => (
+          <SimpleChecklist key={block.label} label={block.label} items={block.items} />
+        ))}
+      </div>
+      <Folio left={kapitel11b.folio.left} right={kapitel11b.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DFAQ: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{faq.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 30px" }}>{faq.heading}</h3>
+      <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+        {faq.items.map((item) => (
+          <div key={item.q}>
+            <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 19, margin: "0 0 6px" }}>{item.q}</p>
+            <p style={{ fontFamily: bodyFont, fontSize: 17, opacity: 0.75, lineHeight: 1.55, margin: 0 }}>{item.a}</p>
+          </div>
+        ))}
+      </div>
+      <Folio left={faq.folio.left} right={faq.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DAnhangIntro: React.FC = () => (
+  <Page bg={tokens.dark}>
+    <div style={{ height: "100%", display: "flex", flexDirection: "column", padding: "70px 70px 52px", color: "#fff" }}>
+      <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 20, letterSpacing: "0.14em", textTransform: "uppercase", color: tokens.accent, margin: 0 }}>
+        {anhangIntro.kicker}
+      </p>
+      <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+        <h1 style={{ fontFamily: displayFont, fontWeight: 900, fontSize: 80, lineHeight: 1, margin: 0, maxWidth: "10ch" }}>
+          {anhangIntro.heading}
+        </h1>
+      </div>
+      {anhangIntro.paragraphs.map((p, i) => (
+        <p key={i} style={{ fontFamily: bodyFont, fontSize: 20, opacity: 0.8, maxWidth: "46ch", margin: "0 0 30px", lineHeight: 1.6 }}>
+          {p}
+        </p>
+      ))}
+      <Folio left={anhangIntro.folio.left} right={anhangIntro.folio.right} light />
+    </div>
+  </Page>
+);
+
+export const DTriggerFoodCheck: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{triggerFoodCheck.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 38, margin: "0 0 14px" }}>{triggerFoodCheck.heading}</h3>
+      <p style={{ fontFamily: bodyFont, fontSize: 19, opacity: 0.7, margin: "0 0 26px" }}>{triggerFoodCheck.intro}</p>
+      <div style={{ border: `1px solid ${tokens.line}`, marginBottom: 26 }}>
+        {triggerFoodCheck.questions.map((q, i) => (
+          <div key={q} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, padding: "18px 20px", borderTop: i === 0 ? "none" : `1px solid ${tokens.line}` }}>
+            <span style={{ fontFamily: bodyFont, fontSize: 18, lineHeight: 1.5 }}>{q}</span>
+            <span style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+              <span style={{ border: `1.5px solid ${tokens.ink}`, opacity: 0.4, borderRadius: 4, width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>J</span>
+              <span style={{ border: `1.5px solid ${tokens.ink}`, opacity: 0.4, borderRadius: 4, width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>N</span>
+            </span>
+          </div>
+        ))}
+      </div>
+      <div style={{ background: tokens.dark, color: "#fff", padding: "18px 20px", borderLeft: `6px solid ${tokens.accent}` }}>
+        <p style={{ fontFamily: bodyFont, fontSize: 16, lineHeight: 1.55, margin: 0 }}>{triggerFoodCheck.result}</p>
+      </div>
+      <Folio left={triggerFoodCheck.folio.left} right={triggerFoodCheck.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DNotfallkarte: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Kicker>{notfallkarte.kicker}</Kicker>
+      <div
+        style={{
+          border: `2px dashed ${tokens.line}`,
+          borderRadius: 16,
+          padding: "40px 44px",
+          maxWidth: 640,
+          width: "100%",
+          marginTop: 20,
+          background: tokens.dark,
+          color: "#fff",
+        }}
+      >
+        <h3 style={{ fontFamily: displayFont, fontWeight: 900, fontSize: 34, margin: "0 0 26px", color: tokens.accent, textAlign: "center" }}>
+          {notfallkarte.heading}
+        </h3>
+        <ol style={{ margin: 0, padding: 0, listStyle: "none" }}>
+          {notfallkarte.steps.map((step, i) => (
+            <li key={step} style={{ display: "flex", gap: 14, marginBottom: 16, fontFamily: bodyFont, fontSize: 17, lineHeight: 1.5 }}>
+              <span style={{ fontFamily: displayFont, fontWeight: 900, color: tokens.accent, width: 24, flexShrink: 0 }}>{i + 1}</span>
+              {step}
+            </li>
+          ))}
+        </ol>
+        <p style={{ fontFamily: bodyFont, fontSize: 13, opacity: 0.5, textAlign: "center", margin: "30px 0 0" }}>{notfallkarte.footer}</p>
+      </div>
+      <div style={{ marginTop: "auto", width: "100%" }}>
+        <Folio left={notfallkarte.folio.left} right={notfallkarte.folio.right} />
+      </div>
+    </div>
+  </Page>
+);
+
+export const DEinkaufslisteDruck: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{einkaufslisteDruck.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 30px" }}>{einkaufslisteDruck.heading}</h3>
+      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        {einkaufslisteDruck.categories.map((cat) => (
+          <div key={cat.label}>
+            <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.04em", textTransform: "uppercase", margin: "0 0 10px", opacity: 0.7 }}>
+              {cat.label}
+            </p>
+            {cat.items.map((item) => (
+              <div key={item} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 0", borderBottom: `1px solid ${tokens.line}` }}>
+                <span style={{ width: 16, height: 16, border: `1.5px solid ${tokens.ink}`, opacity: 0.4, flexShrink: 0 }} />
+                <span style={{ fontFamily: bodyFont, fontSize: 17 }}>{item}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+      <Folio left={einkaufslisteDruck.folio.left} right={einkaufslisteDruck.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DPantry: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{pantry.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 40, margin: "0 0 30px" }}>{pantry.heading}</h3>
+      <div style={{ border: `1px solid ${tokens.line}` }}>
+        {pantry.items.map((item, i) => (
+          <div key={item.name} style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 16, padding: "16px 18px", borderTop: i === 0 ? "none" : `1px solid ${tokens.line}` }}>
+            <span style={{ fontFamily: bodyFont, fontWeight: 700, fontSize: 17 }}>{item.name}</span>
+            <span style={{ fontFamily: bodyFont, fontSize: 15, opacity: 0.7 }}>{item.note}</span>
+          </div>
+        ))}
+      </div>
+      <Folio left={pantry.folio.left} right={pantry.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DUeberChris: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{ueberChris.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 44, margin: "0 0 30px" }}>{ueberChris.heading}</h3>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.3fr", gap: 40 }}>
+        <div style={{ background: tokens.dark, aspectRatio: "3/4", overflow: "hidden" }}>
+          <Img src={staticFile("chris/cover-portrait-duotone.jpg")} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 20%" }} />
+        </div>
+        <div style={{ fontFamily: bodyFont, fontSize: 20, lineHeight: 1.75 }}>
+          {ueberChris.paragraphs.map((p, i) => (
+            <p key={i} style={{ margin: "0 0 16px" }}>
+              {p}
+            </p>
+          ))}
+        </div>
+      </div>
+      <Folio left={ueberChris.folio.left} right={ueberChris.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DSchlusswort: React.FC = () => (
+  <Page>
+    <div style={{ padding: "78px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{schlusswort.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 46, margin: "0 0 30px" }}>{schlusswort.heading}</h3>
+      <div style={{ fontFamily: bodyFont, fontSize: 24, lineHeight: 1.85, maxWidth: "62ch" }}>
+        {schlusswort.paragraphs.map((p, i) => (
+          <p key={i} style={{ margin: "0 0 20px" }}>
+            {p}
+          </p>
+        ))}
+      </div>
+      <Folio left={schlusswort.folio.left} right={schlusswort.folio.right} />
+    </div>
+  </Page>
+);
+
+export const DBackmatter: React.FC = () => (
+  <Page bg={tokens.dark}>
+    <div style={{ height: "100%", display: "flex", flexDirection: "column", padding: "70px 70px 52px", color: "#fff", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+      <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 18, letterSpacing: "0.14em", textTransform: "uppercase", color: tokens.accent, margin: "0 0 20px" }}>
+        {backmatter.kicker}
+      </p>
+      <h1 style={{ fontFamily: displayFont, fontWeight: 900, fontSize: 60, margin: "0 0 24px" }}>{backmatter.heading}</h1>
+      {backmatter.paragraphs.map((p, i) => (
+        <p key={i} style={{ fontFamily: bodyFont, fontSize: 19, opacity: 0.8, maxWidth: "44ch", margin: "0 0 8px", lineHeight: 1.6 }}>
+          {p}
+        </p>
+      ))}
     </div>
   </Page>
 );
