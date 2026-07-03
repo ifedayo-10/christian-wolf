@@ -3,8 +3,7 @@ import { AbsoluteFill, Img, staticFile } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/Archivo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Manrope";
 import { PAGE_WIDTH, PAGE_HEIGHT } from "../pageSize";
-import { book, vonChris, kapitel1, toc, recipe, foreword, chapterDivider } from "../content";
-import { PhotoIcon } from "../components/PlaceholderIcon";
+import { book, vonChris, kapitel1, kapitel2, kapitel3, kapitel5, kapitel6, toc, recipe, foreword, chapterDivider } from "../content";
 
 const { fontFamily: displayFont } = loadDisplay("normal", { weights: ["700", "800", "900"] });
 const { fontFamily: bodyFont } = loadBody("normal", { weights: ["400", "600", "700", "800"] });
@@ -125,29 +124,15 @@ export const DCover: React.FC = () => (
         style={{
           flex: 1,
           margin: "40px -70px 0",
-          background: tokens.bgSoft,
-          borderTop: `1px solid ${tokens.line}`,
-          borderBottom: `1px solid ${tokens.line}`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          background: tokens.dark,
+          overflow: "hidden",
+          position: "relative",
         }}
       >
-        <PhotoIcon size={40} color={tokens.ink} />
-        <p
-          style={{
-            position: "absolute",
-            fontFamily: bodyFont,
-            fontSize: 15,
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-            color: tokens.ink,
-            opacity: 0.5,
-            marginTop: 90,
-          }}
-        >
-          Foto-Platzhalter — Chris, Portrait
-        </p>
+        <Img
+          src={staticFile("chris/cover-portrait-duotone.jpg")}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 20%" }}
+        />
       </div>
 
       <div
@@ -317,24 +302,34 @@ export const DVonChris: React.FC = () => (
       <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, lineHeight: 1.12, margin: "0 0 28px", maxWidth: "18ch" }}>
         {vonChris.heading}
       </h3>
-      <div style={{ display: "grid", gridTemplateColumns: "1.65fr 1fr", gap: 40, alignItems: "start" }}>
-        <div style={{ fontFamily: bodyFont, fontSize: 21, lineHeight: 1.72 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 40, alignItems: "start" }}>
+        <div style={{ fontFamily: bodyFont, fontSize: 23, lineHeight: 1.85 }}>
           {vonChris.paragraphs.map((p, i) => (
             <p key={i} style={{ margin: "0 0 18px" }}>
               {p}
             </p>
           ))}
+          <p style={{ margin: "0 0 18px" }}>
+            Diese Erkenntnis hat mein Leben verändert — und später mein Berufsleben. Ich habe angefangen, das, was
+            ich gelernt hatte, mit anderen zu teilen. Erst mit ein paar Leuten, dann mit Tausenden, mittlerweile mit
+            über 500.000 Menschen, die durch meine Videos einen anderen Blick auf Essen, Kontrolle und Heißhunger
+            gefunden haben. Und ich bin noch nicht fertig.
+          </p>
+          <div style={{ borderLeft: `4px solid ${tokens.accent}`, paddingLeft: 22 }}>
+            <p style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 22, lineHeight: 1.4, margin: 0 }}>
+              {vonChris.pullquote}
+            </p>
+          </div>
         </div>
-        <div
-          style={{
-            background: tokens.dark,
-            color: "#fff",
-            padding: "24px 22px",
-            borderLeft: `6px solid ${tokens.accent}`,
-          }}
-        >
-          <p style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 24, lineHeight: 1.35, margin: 0 }}>
-            {vonChris.pullquote}
+        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          <div style={{ background: tokens.dark, aspectRatio: "3/4", overflow: "hidden" }}>
+            <Img
+              src={staticFile("chris/portrait-2-duotone.jpg")}
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 15%" }}
+            />
+          </div>
+          <p style={{ fontFamily: bodyFont, fontSize: 13, opacity: 0.5, textAlign: "center", margin: 0 }}>
+            Standbild aus Chris' YouTube-Video, bearbeitet
           </p>
         </div>
       </div>
@@ -380,7 +375,7 @@ export const DKapitel1: React.FC = () => (
       <Kicker>{kapitel1.kicker}</Kicker>
       <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 28px" }}>{kapitel1.heading}</h3>
       <div style={{ display: "grid", gridTemplateColumns: "1.65fr 1fr", gap: 40, alignItems: "start" }}>
-        <div style={{ fontFamily: bodyFont, fontSize: 21, lineHeight: 1.72 }}>
+        <div style={{ fontFamily: bodyFont, fontSize: 23, lineHeight: 1.85 }}>
           {kapitel1.paragraphs.map((p, i) => (
             <p key={i} style={{ margin: "0 0 18px" }}>
               {p}
@@ -395,6 +390,69 @@ export const DKapitel1: React.FC = () => (
         <EffortRewardFigure />
       </div>
       <Folio left={kapitel1.folio.left} right={kapitel1.folio.right} />
+    </div>
+  </Page>
+);
+
+const StatCallout: React.FC<{ value: string; label: string }> = ({ value, label }) => (
+  <div style={{ background: tokens.dark, color: "#fff", padding: "26px 24px" }}>
+    <p style={{ fontFamily: displayFont, fontWeight: 900, fontSize: 52, lineHeight: 1, margin: 0, color: tokens.accent }}>
+      {value}
+    </p>
+    <p style={{ fontFamily: bodyFont, fontSize: 15, opacity: 0.8, margin: "10px 0 0", lineHeight: 1.5 }}>{label}</p>
+  </div>
+);
+
+export const DKapitel2: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel2.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 28px" }}>{kapitel2.heading}</h3>
+      <div style={{ display: "grid", gridTemplateColumns: "1.65fr 1fr", gap: 40, alignItems: "start" }}>
+        <div style={{ fontFamily: bodyFont, fontSize: 23, lineHeight: 1.85 }}>
+          {kapitel2.paragraphs.map((p, i) => (
+            <p key={i} style={{ margin: "0 0 16px" }}>
+              {p}
+            </p>
+          ))}
+          <div style={{ borderLeft: `4px solid ${tokens.accent}`, paddingLeft: 22, margin: "18px 0 0" }}>
+            <p style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 22, lineHeight: 1.4, margin: 0 }}>
+              {kapitel2.pullquote}
+            </p>
+          </div>
+        </div>
+        <StatCallout value="Top 10%" label="Chris' eigenes genetisches Übergewichts-Risiko laut DNA-Test — mehr als 90 % der Bevölkerung." />
+      </div>
+      <Folio left={kapitel2.folio.left} right={kapitel2.folio.right} />
+    </div>
+  </Page>
+);
+
+const ResearchCallout: React.FC<{ label: string; text: string }> = ({ label, text }) => (
+  <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, borderLeft: `6px solid ${tokens.accent}`, padding: "22px 24px" }}>
+    <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 14, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 12px", opacity: 0.7 }}>
+      {label}
+    </p>
+    <p style={{ fontFamily: bodyFont, fontSize: 18, lineHeight: 1.6, margin: 0 }}>{text}</p>
+  </div>
+);
+
+export const DKapitel3: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel3.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 28px" }}>{kapitel3.heading}</h3>
+      <div style={{ fontFamily: bodyFont, fontSize: 23, lineHeight: 1.85, maxWidth: "66ch" }}>
+        {kapitel3.paragraphs.map((p, i) => (
+          <p key={i} style={{ margin: "0 0 16px" }}>
+            {p}
+          </p>
+        ))}
+      </div>
+      <div style={{ marginTop: 10, maxWidth: "66ch" }}>
+        <ResearchCallout label={kapitel3.calloutLabel} text={kapitel3.callout} />
+      </div>
+      <Folio left={kapitel3.folio.left} right={kapitel3.folio.right} />
     </div>
   </Page>
 );
@@ -442,6 +500,117 @@ const NutritionTable: React.FC<{ nutrition: { kcal: number; protein: number; car
       </div>
     ))}
   </div>
+);
+
+const ProteinFlowDiagram: React.FC = () => {
+  const steps = ["Protein", "Aminosäuren", "Gluconeogenese", "Glucose", "De-novo-Lipogenese", "Fett"];
+  return (
+    <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "24px 22px" }}>
+      <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 18px" }}>
+        Der Weg von Protein zu Fett
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+        {steps.map((s, i) => (
+          <React.Fragment key={s}>
+            <div
+              style={{
+                background: i === steps.length - 1 ? tokens.dark : "#fff",
+                color: i === steps.length - 1 ? tokens.accent : tokens.ink,
+                border: `1px solid ${tokens.line}`,
+                padding: "10px 14px",
+                fontFamily: bodyFont,
+                fontWeight: 700,
+                fontSize: 15,
+              }}
+            >
+              {s}
+            </div>
+            {i < steps.length - 1 && (
+              <div style={{ textAlign: "center", color: tokens.accent, fontSize: 18, lineHeight: 1, padding: "2px 0" }}>↓</div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+      <p style={{ fontFamily: bodyFont, fontSize: 13, opacity: 0.6, margin: "16px 0 0", lineHeight: 1.5 }}>
+        Zwei energetisch teure Umwandlungsschritte — deshalb wird ein Proteinüberschuss in der Praxis kaum zu Fett.
+      </p>
+    </div>
+  );
+};
+
+export const DKapitel5: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel5.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 28px" }}>{kapitel5.heading}</h3>
+      <div style={{ display: "grid", gridTemplateColumns: "1.65fr 1fr", gap: 40, alignItems: "start" }}>
+        <div style={{ fontFamily: bodyFont, fontSize: 23, lineHeight: 1.85 }}>
+          {kapitel5.paragraphs.map((p, i) => (
+            <p key={i} style={{ margin: "0 0 16px" }}>
+              {p}
+            </p>
+          ))}
+          <div style={{ borderLeft: `4px solid ${tokens.accent}`, paddingLeft: 22, margin: "18px 0 0" }}>
+            <p style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 22, lineHeight: 1.4, margin: 0 }}>
+              {kapitel5.pullquote}
+            </p>
+          </div>
+        </div>
+        <ProteinFlowDiagram />
+      </div>
+      <Folio left={kapitel5.folio.left} right={kapitel5.folio.right} />
+    </div>
+  </Page>
+);
+
+const ChecklistCard: React.FC<{ label: string; items: string[] }> = ({ label, items }) => (
+  <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "24px 22px" }}>
+    <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 16px" }}>
+      {label}
+    </p>
+    {items.map((item) => (
+      <div key={item} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 12 }}>
+        <span
+          style={{
+            width: 18,
+            height: 18,
+            background: tokens.accent,
+            flexShrink: 0,
+            marginTop: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 12,
+            fontWeight: 900,
+            color: tokens.dark,
+          }}
+        >
+          ✓
+        </span>
+        <p style={{ fontFamily: bodyFont, fontSize: 15, lineHeight: 1.5, margin: 0 }}>{item}</p>
+      </div>
+    ))}
+  </div>
+);
+
+export const DKapitel6: React.FC = () => (
+  <Page>
+    <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Kicker>{kapitel6.kicker}</Kicker>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 42, margin: "0 0 28px" }}>{kapitel6.heading}</h3>
+      <div style={{ display: "grid", gridTemplateColumns: "1.65fr 1fr", gap: 40, alignItems: "start" }}>
+        <div style={{ fontFamily: bodyFont, fontSize: 23, lineHeight: 1.85 }}>
+          {kapitel6.paragraphs.map((p, i) => (
+            <p key={i} style={{ margin: "0 0 16px" }}>
+              {p}
+            </p>
+          ))}
+        </div>
+        <ChecklistCard label={kapitel6.calloutLabel} items={kapitel6.checklist} />
+      </div>
+      <Folio left={kapitel6.folio.left} right={kapitel6.folio.right} />
+    </div>
+  </Page>
 );
 
 export const DRecipe: React.FC = () => (

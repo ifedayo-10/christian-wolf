@@ -4,7 +4,19 @@ import { PAGE_WIDTH, PAGE_HEIGHT } from "./pageSize";
 import { ACover, AForeword, ATOC, AVonChris, AKapitel1, ARecipe } from "./directions/a";
 import { BCover, BForeword, BTOC, BVonChris, BKapitel1, BRecipe } from "./directions/b";
 import { CCover, CForeword, CTOC, CVonChris, CKapitel1, CRecipe } from "./directions/c";
-import { DCover, DTOC, DForeword, DChapterDivider, DVonChris, DKapitel1, DRecipe } from "./directions/d";
+import {
+  DCover,
+  DTOC,
+  DForeword,
+  DChapterDivider,
+  DVonChris,
+  DKapitel1,
+  DKapitel2,
+  DKapitel3,
+  DKapitel5,
+  DKapitel6,
+  DRecipe,
+} from "./directions/d";
 
 const stills: { id: string; component: React.FC }[] = [
   { id: "a-cover", component: ACover },
@@ -31,6 +43,10 @@ const stills: { id: string; component: React.FC }[] = [
   { id: "d-chapter-divider", component: DChapterDivider },
   { id: "d-von-chris", component: DVonChris },
   { id: "d-kapitel1", component: DKapitel1 },
+  { id: "d-kapitel2", component: DKapitel2 },
+  { id: "d-kapitel3", component: DKapitel3 },
+  { id: "d-kapitel5", component: DKapitel5 },
+  { id: "d-kapitel6", component: DKapitel6 },
   { id: "d-recipe", component: DRecipe },
 ];
 
