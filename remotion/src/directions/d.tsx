@@ -201,55 +201,42 @@ export const DTOC: React.FC = () => (
   </Page>
 );
 
+const ForewordDropCap: React.FC<{ text: string }> = ({ text }) => {
+  const first = text.charAt(0);
+  const rest = text.slice(1);
+  return (
+    <p style={{ margin: "0 0 20px", fontSize: 23, lineHeight: 1.8 }}>
+      <span
+        style={{
+          fontFamily: displayFont,
+          fontWeight: 900,
+          fontSize: 84,
+          lineHeight: 0.72,
+          float: "left",
+          padding: "4px 10px 0 0",
+          color: tokens.accent,
+        }}
+      >
+        {first}
+      </span>
+      {rest}
+    </p>
+  );
+};
+
 export const DForeword: React.FC = () => (
   <Page>
     <div style={{ padding: "78px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
       <Kicker>{foreword.kicker}</Kicker>
-      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 44, margin: "0 0 26px", maxWidth: "16ch" }}>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 44, margin: "0 0 30px", maxWidth: "16ch" }}>
         {foreword.heading}
       </h3>
-      <div style={{ fontFamily: bodyFont, fontSize: 21, lineHeight: 1.65, maxWidth: "56ch" }}>
-        {foreword.intro.map((p, i) => (
-          <p key={i} style={{ margin: "0 0 16px" }}>
+      <div style={{ fontFamily: bodyFont, fontSize: 23, lineHeight: 1.8, maxWidth: "62ch" }}>
+        <ForewordDropCap text={foreword.paragraphs[0]} />
+        {foreword.paragraphs.slice(1).map((p, i) => (
+          <p key={i} style={{ margin: "0 0 20px" }}>
             {p}
           </p>
-        ))}
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", marginTop: 24 }}>
-        {foreword.steps.map((s) => (
-          <div
-            key={s.n}
-            style={{
-              display: "flex",
-              gap: 22,
-              alignItems: "center",
-              padding: "18px 4px",
-              borderBottom: `1px solid ${tokens.line}`,
-            }}
-          >
-            <span
-              style={{
-                fontFamily: displayFont,
-                fontWeight: 900,
-                fontSize: 22,
-                width: 44,
-                height: 44,
-                borderRadius: "50%",
-                background: tokens.dark,
-                color: tokens.accent,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              {s.n}
-            </span>
-            <div>
-              <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 19, margin: "0 0 4px" }}>{s.label}</p>
-              <p style={{ fontFamily: bodyFont, fontSize: 17, opacity: 0.65, margin: 0, lineHeight: 1.5 }}>{s.text}</p>
-            </div>
-          </div>
         ))}
       </div>
       <Folio left={foreword.folio.left} right={foreword.folio.right} />

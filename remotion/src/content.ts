@@ -95,31 +95,11 @@ export const kapitel6 = {
 export const foreword = {
   kicker: "Vorwort",
   heading: "Worum es in diesem Buch geht",
-  intro: [
+  paragraphs: [
     "Dieses Buch ist kein Diätplan. Es ist eine Anleitung, wie du aufhörst, gegen dich selbst zu kämpfen.",
-    "Wir gehen das in vier Schritten an — in der Reihenfolge, die wirklich funktioniert, nicht in der, die am einfachsten klingt.",
-  ],
-  steps: [
-    {
-      n: "1",
-      label: "Warum Heißhunger entsteht",
-      text: "Warum du nicht schwach bist — sondern deine Biologie einfach ihren Job macht.",
-    },
-    {
-      n: "2",
-      label: "Was wirklich hilft",
-      text: "Umfeld, Protein und clevere Alternativen statt Willenskraft und Verbote.",
-    },
-    {
-      n: "3",
-      label: "Umgang mit Fressattacken",
-      text: "Ein Notfallplan für den Moment — ohne Scham, ohne Nachbestrafung.",
-    },
-    {
-      n: "4",
-      label: "Ein einfacher Alltagsplan",
-      text: "Küche, Einkaufsliste, Rezepte, Routinen — alles direkt umsetzbar.",
-    },
+    "Wir gehen das in einer bestimmten Reihenfolge an — nicht der, die am einfachsten klingt, sondern der, die wirklich funktioniert. Zuerst schauen wir uns an, warum Heißhunger überhaupt entsteht: warum du nicht schwach bist, sondern deine Biologie einfach ihren Job macht. Danach geht es um das, was wirklich hilft — dein Umfeld, der Protein-Trick und clevere Alternativen, nicht Willenskraft und Verbote.",
+    "Im dritten Teil geht es um den Umgang mit Fressattacken: ein Notfallplan für den Moment, ohne Scham und ohne Nachbestrafung danach. Und am Ende steht ein einfacher Alltagsplan — Küche, Einkaufsliste, Rezepte, Routinen —, den du ab morgen übernehmen kannst.",
+    "Du wirst in diesem Buch keine Kalorienziele finden und keine Verbotslisten. Was du finden wirst, ist ein anderer Blick auf dein Essverhalten — einer, der dich freundlicher mit dir selbst umgehen lässt und trotzdem dahin bringt, wo du hinwillst.",
   ],
   folio: { left: "Vorwort", right: "9" },
 };
