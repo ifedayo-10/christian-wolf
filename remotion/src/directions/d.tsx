@@ -3,6 +3,7 @@ import { AbsoluteFill, Img, staticFile } from "remotion";
 import { loadFont as loadDisplay } from "@remotion/google-fonts/Archivo";
 import { loadFont as loadBody } from "@remotion/google-fonts/Manrope";
 import { PAGE_WIDTH, PAGE_HEIGHT } from "../pageSize";
+import { ClockIcon, ServingsIcon, FlameIcon } from "../components/PlaceholderIcon";
 import {
   book,
   vonChris,
@@ -45,14 +46,52 @@ const { fontFamily: displayFont } = loadDisplay("normal", { weights: ["700", "80
 const { fontFamily: bodyFont } = loadBody("normal", { weights: ["400", "600", "700", "800"] });
 
 const tokens = {
-  bg: "#FFFFFF",
-  bgSoft: "#F5F5F5",
-  ink: "#1C1D1F",
-  dark: "#141618",
-  accent: "#FFB800",
-  accentInk: "#1C1D1F",
-  line: "#E7E7E9",
+  bg: "#FAF6EF",
+  bgSoft: "#F1EBDD",
+  ink: "#221D17",
+  dark: "#15110D",
+  accent: "#E8A33D",
+  accent2: "#B23B2E",
+  accentInk: "#221D17",
+  line: "#DED4C0",
+  radius: 10,
+  shadow: "0 8px 24px rgba(21,17,13,0.08)",
 };
+
+const GRAIN_URL =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.85 0'/></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`
+  );
+
+const Grain: React.FC<{ light?: boolean }> = ({ light }) => (
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      backgroundImage: `url("${GRAIN_URL}")`,
+      backgroundSize: "160px 160px",
+      opacity: light ? 0.05 : 0.07,
+      mixBlendMode: light ? "multiply" : "overlay",
+      pointerEvents: "none",
+    }}
+  />
+);
+
+const Card: React.FC<{ children: React.ReactNode; style?: React.CSSProperties }> = ({ children, style }) => (
+  <div
+    style={{
+      background: tokens.bgSoft,
+      border: `1px solid ${tokens.line}`,
+      borderRadius: tokens.radius,
+      boxShadow: tokens.shadow,
+      padding: "22px 24px",
+      ...style,
+    }}
+  >
+    {children}
+  </div>
+);
 
 const coverSubtitleD = "Warum du nicht schwach bist — und was wirklich hilft";
 
@@ -67,6 +106,7 @@ const Page: React.FC<{ children: React.ReactNode; bg?: string }> = ({ children, 
     }}
   >
     {children}
+    <Grain light={(bg ?? tokens.bg) !== tokens.dark} />
   </AbsoluteFill>
 );
 
@@ -107,6 +147,37 @@ const Folio: React.FC<{ left: string; right: string; light?: boolean }> = ({ lef
   >
     <span>{left}</span>
     <span>{right}</span>
+  </div>
+);
+
+const IconStatBadge: React.FC<{ icon: React.ReactNode; value: string; label: string }> = ({ icon, value, label }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+    <div
+      style={{
+        width: 46,
+        height: 46,
+        borderRadius: "50%",
+        background: tokens.dark,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+      }}
+    >
+      {icon}
+    </div>
+    <div>
+      <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, margin: 0 }}>{value}</p>
+      <p style={{ fontFamily: bodyFont, fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", opacity: 0.55, margin: 0 }}>{label}</p>
+    </div>
+  </div>
+);
+
+const IconStatRow: React.FC<{ items: { icon: React.ReactNode; value: string; label: string }[] }> = ({ items }) => (
+  <div style={{ display: "flex", gap: 30, marginBottom: 24 }}>
+    {items.map((it, i) => (
+      <IconStatBadge key={i} icon={it.icon} value={it.value} label={it.label} />
+    ))}
   </div>
 );
 
@@ -168,6 +239,13 @@ export const DCover: React.FC = () => (
         <Img
           src={staticFile("chris/cover-portrait-duotone.jpg")}
           style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 20%" }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: `linear-gradient(180deg, rgba(21,17,13,0) 55%, ${tokens.dark} 100%)`,
+          }}
         />
       </div>
 
@@ -352,11 +430,12 @@ export const DVonChris: React.FC = () => (
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          <div style={{ background: tokens.dark, aspectRatio: "3/4", overflow: "hidden" }}>
+          <div style={{ background: tokens.dark, aspectRatio: "3/4", overflow: "hidden", position: "relative", borderRadius: 6, boxShadow: tokens.shadow }}>
             <Img
               src={staticFile("chris/portrait-2-duotone.jpg")}
               style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 15%" }}
             />
+            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, rgba(21,17,13,0) 65%, ${tokens.dark} 100%)` }} />
           </div>
           <p style={{ fontFamily: bodyFont, fontSize: 13, opacity: 0.5, textAlign: "center", margin: 0 }}>
             Standbild aus Chris' YouTube-Video, bearbeitet
@@ -398,8 +477,8 @@ const EffortRewardFigure: React.FC = () => {
     { label: "Salat schnippeln", effort: 80, reward: 55 },
   ];
   return (
-    <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "22px 24px" }}>
-      <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 18px" }}>
+    <Card>
+      <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", color: tokens.accent2, margin: "0 0 18px" }}>
         Aufwand ↔ Belohnung
       </p>
       {rows.map((r) => (
@@ -411,15 +490,15 @@ const EffortRewardFigure: React.FC = () => {
           ] as const).map(([k, v, color]) => (
             <div key={k} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
               <span style={{ fontFamily: bodyFont, fontSize: 13, width: 76, opacity: 0.6 }}>{k}</span>
-              <div style={{ flex: 1, height: 10, background: "#fff", border: `1px solid ${tokens.line}` }}>
-                <div style={{ width: `${v}%`, height: "100%", background: color }} />
+              <div style={{ flex: 1, height: 10, borderRadius: 5, background: tokens.bg, border: `1px solid ${tokens.line}` }}>
+                <div style={{ width: `${v}%`, height: "100%", borderRadius: 5, background: color }} />
               </div>
               <span style={{ fontFamily: bodyFont, fontWeight: 700, fontSize: 13, width: 32 }}>{v}%</span>
             </div>
           ))}
         </div>
       ))}
-    </div>
+    </Card>
   );
 };
 
@@ -449,7 +528,8 @@ export const DKapitel1: React.FC = () => (
 );
 
 const StatCallout: React.FC<{ value: string; label: string }> = ({ value, label }) => (
-  <div style={{ background: tokens.dark, color: "#fff", padding: "26px 24px" }}>
+  <div style={{ background: tokens.dark, color: "#fff", borderRadius: tokens.radius, boxShadow: tokens.shadow, padding: "26px 24px", position: "relative", overflow: "hidden" }}>
+    <Grain />
     <p style={{ fontFamily: displayFont, fontWeight: 900, fontSize: 52, lineHeight: 1, margin: 0, color: tokens.accent }}>
       {value}
     </p>
@@ -483,12 +563,12 @@ export const DKapitel2: React.FC = () => (
 );
 
 const ResearchCallout: React.FC<{ label: string; text: string }> = ({ label, text }) => (
-  <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, borderLeft: `6px solid ${tokens.accent}`, padding: "22px 24px" }}>
-    <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 14, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 12px", opacity: 0.7 }}>
+  <Card style={{ borderLeft: `6px solid ${tokens.accent}` }}>
+    <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 14, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 12px", color: tokens.accent2 }}>
       {label}
     </p>
     <p style={{ fontFamily: bodyFont, fontSize: 18, lineHeight: 1.6, margin: 0 }}>{text}</p>
-  </div>
+  </Card>
 );
 
 export const DKapitel3: React.FC = () => (
@@ -514,17 +594,17 @@ export const DKapitel3: React.FC = () => (
 const NutritionTable: React.FC<{ nutrition: { kcal: number; protein: number; carbs: number; fat: number } }> = ({
   nutrition,
 }) => (
-  <div style={{ border: `1px solid ${tokens.ink}`, width: "100%" }}>
+  <div style={{ border: `1px solid ${tokens.line}`, borderRadius: tokens.radius, boxShadow: tokens.shadow, width: "100%", overflow: "hidden" }}>
     <div
       style={{
         background: tokens.dark,
-        color: "#fff",
+        color: tokens.accent,
         fontFamily: bodyFont,
         fontWeight: 800,
         fontSize: 14,
         letterSpacing: "0.06em",
         textTransform: "uppercase",
-        padding: "8px 14px",
+        padding: "10px 14px",
       }}
     >
       Nährwerte pro Portion
@@ -541,6 +621,7 @@ const NutritionTable: React.FC<{ nutrition: { kcal: number; protein: number; car
           display: "flex",
           justifyContent: "space-between",
           padding: "9px 14px",
+          background: tokens.bgSoft,
           borderTop: i === 0 ? "none" : `1px solid ${tokens.line}`,
           fontFamily: bodyFont,
           fontSize: 16,
@@ -559,8 +640,8 @@ const NutritionTable: React.FC<{ nutrition: { kcal: number; protein: number; car
 const ProteinFlowDiagram: React.FC = () => {
   const steps = ["Protein", "Aminosäuren", "Gluconeogenese", "Glucose", "De-novo-Lipogenese", "Fett"];
   return (
-    <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "24px 22px" }}>
-      <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 18px" }}>
+    <Card>
+      <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", color: tokens.accent2, margin: "0 0 18px" }}>
         Der Weg von Protein zu Fett
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
@@ -568,9 +649,10 @@ const ProteinFlowDiagram: React.FC = () => {
           <React.Fragment key={s}>
             <div
               style={{
-                background: i === steps.length - 1 ? tokens.dark : "#fff",
+                background: i === steps.length - 1 ? tokens.dark : tokens.bg,
                 color: i === steps.length - 1 ? tokens.accent : tokens.ink,
                 border: `1px solid ${tokens.line}`,
+                borderRadius: 6,
                 padding: "10px 14px",
                 fontFamily: bodyFont,
                 fontWeight: 700,
@@ -588,7 +670,7 @@ const ProteinFlowDiagram: React.FC = () => {
       <p style={{ fontFamily: bodyFont, fontSize: 13, opacity: 0.6, margin: "16px 0 0", lineHeight: 1.5 }}>
         Zwei energetisch teure Umwandlungsschritte — deshalb wird ein Proteinüberschuss in der Praxis kaum zu Fett.
       </p>
-    </div>
+    </Card>
   );
 };
 
@@ -618,8 +700,8 @@ export const DKapitel5: React.FC = () => (
 );
 
 const ChecklistCard: React.FC<{ label: string; items: string[] }> = ({ label, items }) => (
-  <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "24px 22px" }}>
-    <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 16px" }}>
+  <Card>
+    <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", color: tokens.accent2, margin: "0 0 16px" }}>
       {label}
     </p>
     {items.map((item) => (
@@ -628,6 +710,7 @@ const ChecklistCard: React.FC<{ label: string; items: string[] }> = ({ label, it
           style={{
             width: 18,
             height: 18,
+            borderRadius: 5,
             background: tokens.accent,
             flexShrink: 0,
             marginTop: 2,
@@ -644,7 +727,7 @@ const ChecklistCard: React.FC<{ label: string; items: string[] }> = ({ label, it
         <p style={{ fontFamily: bodyFont, fontSize: 15, lineHeight: 1.5, margin: 0 }}>{item}</p>
       </div>
     ))}
-  </div>
+  </Card>
 );
 
 export const DKapitel6: React.FC = () => (
@@ -675,10 +758,11 @@ export const DRecipe: React.FC = () => (
           <span
             key={tag}
             style={{
-              background: tokens.bgSoft,
-              border: `1px solid ${tokens.line}`,
-              borderRadius: 4,
-              padding: "6px 12px",
+              background: "transparent",
+              border: `1.5px solid ${tokens.accent}`,
+              color: tokens.accent2,
+              borderRadius: 20,
+              padding: "6px 14px",
               fontFamily: bodyFont,
               fontWeight: 700,
               fontSize: 13,
@@ -688,32 +772,36 @@ export const DRecipe: React.FC = () => (
           </span>
         ))}
       </div>
-      <h3 style={{ fontFamily: displayFont, fontWeight: 900, fontSize: 48, margin: "0 0 14px" }}>{recipe.heading}</h3>
-      <div
-        style={{
-          display: "flex",
-          gap: 24,
-          background: tokens.bgSoft,
-          border: `1px solid ${tokens.line}`,
-          padding: "10px 16px",
-          width: "fit-content",
-          marginBottom: 20,
-        }}
-      >
-        <span style={{ fontFamily: bodyFont, fontSize: 14, fontWeight: 700 }}>{recipe.servings}</span>
-        <span style={{ fontFamily: bodyFont, fontSize: 14, opacity: 0.5 }}>|</span>
-        <span style={{ fontFamily: bodyFont, fontSize: 14, fontWeight: 700 }}>Zubereitung: {recipe.prepTime}</span>
-        <span style={{ fontFamily: bodyFont, fontSize: 14, opacity: 0.5 }}>|</span>
-        <span style={{ fontFamily: bodyFont, fontSize: 14, fontWeight: 700 }}>{recipe.cookTime}</span>
-      </div>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 900, fontSize: 48, margin: "0 0 20px" }}>{recipe.heading}</h3>
+      <IconStatRow
+        items={[
+          { icon: <ServingsIcon size={20} color={tokens.accent} />, value: recipe.servings, label: "Portionen" },
+          { icon: <ClockIcon size={20} color={tokens.accent} />, value: recipe.prepTime, label: "Zubereitung" },
+          { icon: <FlameIcon size={18} color={tokens.accent} />, value: recipe.cookTime, label: "Quellzeit" },
+        ]}
+      />
       <p style={{ fontFamily: bodyFont, fontSize: 18, lineHeight: 1.6, opacity: 0.75, maxWidth: "62ch", margin: "0 0 26px" }}>
         {recipe.subheading}
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1.3fr", gap: 36, alignItems: "start" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 16, alignItems: "center" }}>
-          <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: 22, display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
-            <Img src={staticFile(recipe.productImage)} style={{ width: 170, height: 170, objectFit: "contain" }} />
+          <div
+            style={{
+              background: `radial-gradient(ellipse at 50% 40%, ${tokens.bgSoft}, ${tokens.bg})`,
+              borderRadius: tokens.radius,
+              boxShadow: tokens.shadow,
+              padding: 22,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+            }}
+          >
+            <Img
+              src={staticFile(recipe.productImage)}
+              style={{ width: 170, height: 170, objectFit: "contain", filter: "drop-shadow(0 14px 18px rgba(21,17,13,0.18))" }}
+            />
           </div>
           <p style={{ fontFamily: bodyFont, fontSize: 13, opacity: 0.55, textAlign: "center", margin: 0 }}>
             {recipe.productLabel}
@@ -746,6 +834,7 @@ export const DRecipe: React.FC = () => (
                     top: 0,
                     width: 22,
                     height: 22,
+                    borderRadius: 6,
                     background: tokens.dark,
                     color: tokens.accent,
                     fontFamily: bodyFont,
@@ -766,15 +855,15 @@ export const DRecipe: React.FC = () => (
       </div>
 
       <div style={{ marginTop: 26 }}>
-        <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 14px" }}>
+        <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", color: tokens.accent2, margin: "0 0 14px" }}>
           {recipe.alternativesLabel}
         </p>
         <div style={{ display: "flex", gap: 16 }}>
           {recipe.alternatives.map((alt) => (
-            <div key={alt.key} style={{ flex: 1, background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "14px 10px", display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+            <Card key={alt.key} style={{ flex: 1, padding: "14px 10px", display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
               <Img src={staticFile(alt.image)} style={{ width: 66, height: 66, objectFit: "contain" }} />
               <p style={{ fontFamily: bodyFont, fontSize: 13, textAlign: "center", margin: 0, opacity: 0.7, fontWeight: 600 }}>{alt.label}</p>
-            </div>
+            </Card>
           ))}
         </div>
       </div>
@@ -787,19 +876,19 @@ export const DRecipe: React.FC = () => (
 /* ===================== Additional chapters for the full 35-page book ===================== */
 
 const SimpleChecklist: React.FC<{ label: string; items: string[] }> = ({ label, items }) => (
-  <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "22px 24px" }}>
-    <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 16px" }}>
+  <Card>
+    <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", color: tokens.accent2, margin: "0 0 16px" }}>
       {label}
     </p>
     {items.map((item) => (
       <div key={item} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 12 }}>
-        <span style={{ width: 18, height: 18, background: tokens.accent, flexShrink: 0, marginTop: 2, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 900, color: tokens.dark }}>
+        <span style={{ width: 18, height: 18, borderRadius: 5, background: tokens.accent, flexShrink: 0, marginTop: 2, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 900, color: tokens.dark }}>
           ✓
         </span>
         <p style={{ fontFamily: bodyFont, fontSize: 15, lineHeight: 1.5, margin: 0 }}>{item}</p>
       </div>
     ))}
-  </div>
+  </Card>
 );
 
 export const DKapitel3b: React.FC = () => (
@@ -849,13 +938,14 @@ const MakeTag: React.FC<{ make: string }> = ({ make }) => (
     style={{
       display: "inline-block",
       padding: "3px 10px",
+      borderRadius: 5,
       fontFamily: bodyFont,
       fontWeight: 800,
       fontSize: 12,
       letterSpacing: "0.04em",
       textTransform: "uppercase",
-      background: make === "schwer" ? tokens.dark : tokens.accent,
-      color: make === "schwer" ? tokens.accent : tokens.dark,
+      background: make === "schwer" ? tokens.accent2 : tokens.accent,
+      color: make === "schwer" ? "#fff" : tokens.dark,
     }}
   >
     {make}
@@ -870,7 +960,7 @@ export const DKapitel6b: React.FC = () => (
       <p style={{ fontFamily: bodyFont, fontSize: 19, opacity: 0.7, lineHeight: 1.6, maxWidth: "66ch", margin: "0 0 30px" }}>
         {kapitel6b.intro}
       </p>
-      <div style={{ border: `1px solid ${tokens.line}` }}>
+      <div style={{ border: `1px solid ${tokens.line}`, borderRadius: tokens.radius, boxShadow: tokens.shadow, overflow: "hidden" }}>
         {kapitel6b.rows.map((r, i) => (
           <div
             key={r.food}
@@ -959,8 +1049,8 @@ export const DKapitel9a: React.FC = () => (
 const CategoryColumns: React.FC<{ categories: { label: string; items: string[] }[] }> = ({ categories }) => (
   <div style={{ display: "flex", gap: 24 }}>
     {categories.map((cat) => (
-      <div key={cat.label} style={{ flex: 1, background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "20px 18px" }}>
-        <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 14, letterSpacing: "0.04em", textTransform: "uppercase", margin: "0 0 14px", opacity: 0.75 }}>
+      <Card key={cat.label} style={{ flex: 1, padding: "20px 18px" }}>
+        <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 14, letterSpacing: "0.04em", textTransform: "uppercase", margin: "0 0 14px", color: tokens.accent2 }}>
           {cat.label}
         </p>
         {cat.items.map((item) => (
@@ -968,7 +1058,7 @@ const CategoryColumns: React.FC<{ categories: { label: string; items: string[] }
             {item}
           </p>
         ))}
-      </div>
+      </Card>
     ))}
   </div>
 );
@@ -996,23 +1086,24 @@ const SimpleRecipe: React.FC<{ data: typeof recipe2 }> = ({ data }) => (
     <div style={{ padding: "60px 70px 46px", height: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
         {data.tags.map((tag) => (
-          <span key={tag} style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, borderRadius: 4, padding: "6px 12px", fontFamily: bodyFont, fontWeight: 700, fontSize: 13 }}>
+          <span key={tag} style={{ background: "transparent", border: `1.5px solid ${tokens.accent}`, color: tokens.accent2, borderRadius: 20, padding: "6px 14px", fontFamily: bodyFont, fontWeight: 700, fontSize: 13 }}>
             {tag}
           </span>
         ))}
       </div>
-      <h3 style={{ fontFamily: displayFont, fontWeight: 900, fontSize: 42, margin: "0 0 14px" }}>{data.heading}</h3>
-      <div style={{ display: "flex", gap: 24, background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: "10px 16px", width: "fit-content", marginBottom: 20 }}>
-        <span style={{ fontFamily: bodyFont, fontSize: 14, fontWeight: 700 }}>{data.servings}</span>
-        <span style={{ fontFamily: bodyFont, fontSize: 14, opacity: 0.5 }}>|</span>
-        <span style={{ fontFamily: bodyFont, fontSize: 14, fontWeight: 700 }}>Zubereitung: {data.prepTime}</span>
-      </div>
+      <h3 style={{ fontFamily: displayFont, fontWeight: 900, fontSize: 42, margin: "0 0 20px" }}>{data.heading}</h3>
+      <IconStatRow
+        items={[
+          { icon: <ServingsIcon size={20} color={tokens.accent} />, value: data.servings, label: "Portionen" },
+          { icon: <ClockIcon size={20} color={tokens.accent} />, value: data.prepTime, label: "Zubereitung" },
+        ]}
+      />
       <p style={{ fontFamily: bodyFont, fontSize: 18, lineHeight: 1.6, opacity: 0.75, maxWidth: "62ch", margin: "0 0 28px" }}>
         {data.subheading}
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1.3fr", gap: 36, alignItems: "start" }}>
-        <div style={{ background: tokens.bgSoft, border: `1px solid ${tokens.line}`, padding: 30, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Card style={{ padding: 30, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ textAlign: "center" }}>
             {([
               ["Kcal", data.nutrition.kcal],
@@ -1026,7 +1117,7 @@ const SimpleRecipe: React.FC<{ data: typeof recipe2 }> = ({ data }) => (
               </div>
             ))}
           </div>
-        </div>
+        </Card>
         <div>
           <p style={{ fontFamily: bodyFont, fontWeight: 800, fontSize: 15, letterSpacing: "0.06em", textTransform: "uppercase", margin: "0 0 12px" }}>
             Zutaten
@@ -1045,7 +1136,7 @@ const SimpleRecipe: React.FC<{ data: typeof recipe2 }> = ({ data }) => (
           <ol style={{ margin: 0, padding: 0, listStyle: "none" }}>
             {data.steps.map((step, i) => (
               <li key={step} style={{ fontFamily: bodyFont, fontSize: 17, lineHeight: 1.6, marginBottom: 10, paddingLeft: 34, position: "relative" }}>
-                <span style={{ position: "absolute", left: 0, top: 0, width: 22, height: 22, background: tokens.dark, color: tokens.accent, fontFamily: bodyFont, fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ position: "absolute", left: 0, top: 0, width: 22, height: 22, borderRadius: 6, background: tokens.dark, color: tokens.accent, fontFamily: bodyFont, fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   {i + 1}
                 </span>
                 {step}
@@ -1074,7 +1165,7 @@ export const DKapitel11a: React.FC = () => (
           </p>
         ))}
       </div>
-      <div style={{ border: `1px solid ${tokens.line}` }}>
+      <div style={{ border: `1px solid ${tokens.line}`, borderRadius: tokens.radius, boxShadow: tokens.shadow, overflow: "hidden" }}>
         {kapitel11a.rows.map((r, i) => (
           <div key={r.day} style={{ display: "grid", gridTemplateColumns: "0.5fr 2fr", gap: 16, padding: "16px 18px", borderTop: i === 0 ? "none" : `1px solid ${tokens.line}` }}>
             <span style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 18 }}>{r.day}</span>
@@ -1147,7 +1238,7 @@ export const DTriggerFoodCheck: React.FC = () => (
       <Kicker>{triggerFoodCheck.kicker}</Kicker>
       <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 38, margin: "0 0 14px" }}>{triggerFoodCheck.heading}</h3>
       <p style={{ fontFamily: bodyFont, fontSize: 19, opacity: 0.7, margin: "0 0 26px" }}>{triggerFoodCheck.intro}</p>
-      <div style={{ border: `1px solid ${tokens.line}`, marginBottom: 26 }}>
+      <div style={{ border: `1px solid ${tokens.line}`, borderRadius: tokens.radius, boxShadow: tokens.shadow, overflow: "hidden", marginBottom: 26 }}>
         {triggerFoodCheck.questions.map((q, i) => (
           <div key={q} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, padding: "18px 20px", borderTop: i === 0 ? "none" : `1px solid ${tokens.line}` }}>
             <span style={{ fontFamily: bodyFont, fontSize: 18, lineHeight: 1.5 }}>{q}</span>
@@ -1158,7 +1249,7 @@ export const DTriggerFoodCheck: React.FC = () => (
           </div>
         ))}
       </div>
-      <div style={{ background: tokens.dark, color: "#fff", padding: "18px 20px", borderLeft: `6px solid ${tokens.accent}` }}>
+      <div style={{ background: tokens.dark, color: "#fff", borderRadius: tokens.radius, boxShadow: tokens.shadow, padding: "18px 20px", borderLeft: `6px solid ${tokens.accent}` }}>
         <p style={{ fontFamily: bodyFont, fontSize: 16, lineHeight: 1.55, margin: 0 }}>{triggerFoodCheck.result}</p>
       </div>
       <Folio left={triggerFoodCheck.folio.left} right={triggerFoodCheck.folio.right} />
@@ -1172,8 +1263,9 @@ export const DNotfallkarte: React.FC = () => (
       <Kicker>{notfallkarte.kicker}</Kicker>
       <div
         style={{
-          border: `2px dashed ${tokens.line}`,
+          border: `2px dashed rgba(232,163,61,0.45)`,
           borderRadius: 16,
+          boxShadow: tokens.shadow,
           padding: "40px 44px",
           maxWidth: 640,
           width: "100%",
@@ -1232,7 +1324,7 @@ export const DPantry: React.FC = () => (
     <div style={{ padding: "66px 70px 52px", height: "100%", display: "flex", flexDirection: "column" }}>
       <Kicker>{pantry.kicker}</Kicker>
       <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 40, margin: "0 0 30px" }}>{pantry.heading}</h3>
-      <div style={{ border: `1px solid ${tokens.line}` }}>
+      <div style={{ border: `1px solid ${tokens.line}`, borderRadius: tokens.radius, boxShadow: tokens.shadow, overflow: "hidden" }}>
         {pantry.items.map((item, i) => (
           <div key={item.name} style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 16, padding: "16px 18px", borderTop: i === 0 ? "none" : `1px solid ${tokens.line}` }}>
             <span style={{ fontFamily: bodyFont, fontWeight: 700, fontSize: 17 }}>{item.name}</span>
@@ -1251,8 +1343,9 @@ export const DUeberChris: React.FC = () => (
       <Kicker>{ueberChris.kicker}</Kicker>
       <h3 style={{ fontFamily: displayFont, fontWeight: 800, fontSize: 44, margin: "0 0 30px" }}>{ueberChris.heading}</h3>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1.3fr", gap: 40 }}>
-        <div style={{ background: tokens.dark, aspectRatio: "3/4", overflow: "hidden" }}>
+        <div style={{ background: tokens.dark, aspectRatio: "3/4", overflow: "hidden", position: "relative", borderRadius: 6, boxShadow: tokens.shadow }}>
           <Img src={staticFile("chris/cover-portrait-duotone.jpg")} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 20%" }} />
+          <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, rgba(21,17,13,0) 65%, ${tokens.dark} 100%)` }} />
         </div>
         <div style={{ fontFamily: bodyFont, fontSize: 20, lineHeight: 1.75 }}>
           {ueberChris.paragraphs.map((p, i) => (

@@ -1,7 +1,8 @@
 import base64, pathlib
 
-OUT = pathlib.Path("/Users/dayo/heisshunger-ebook/remotion/out")
-DEST = pathlib.Path("/Users/dayo/heisshunger-ebook/design-mockups/book-viewer.html")
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+OUT = ROOT / "remotion" / "out"
+DEST = ROOT / "design-mockups" / "book-viewer.html"
 
 def b64(name):
     data = (OUT / f"{name}.png").read_bytes()
@@ -69,15 +70,16 @@ spreads_js = ",\n".join(spread_js_items)
 HTML = f"""<title>Heißhunger — Buch-Vorschau</title>
 <style>
   :root{{
-    --room-bg-1:#2b2f36; --room-bg-2:#1a1c20;
-    --page-edge:#e8e4da; --ui-ink:#EDEEF2; --ui-muted:#9BA0AC; --accent:#FFB800;
+    --room-bg-1:#241c14; --room-bg-2:#0f0b08;
+    --page-edge:#e8e4da; --ui-ink:#F2ECE0; --ui-muted:#A69C89; --accent:#E8A33D;
   }}
   *{{box-sizing:border-box;}}
   html,body{{height:100%;}}
   body{{
     margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
     background:
-      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.06), transparent 60%),
+      radial-gradient(ellipse at 50% 0%, rgba(232,163,61,0.10), transparent 60%),
+      radial-gradient(ellipse at 50% 100%, rgba(232,163,61,0.06), transparent 55%),
       linear-gradient(180deg, var(--room-bg-1), var(--room-bg-2));
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     color:var(--ui-ink);
